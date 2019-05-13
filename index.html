@@ -112,7 +112,7 @@
                             }
                             var background_img = element.display_resources[2].src;
                             if (type_content == `<span class="badge badge-warning">Video</span>`) {
-                              var download_link = element.video_resources[1].src
+                            try { var download_link = element.video_resources[1].src } catch (e) { var download_link = element.video_resources[0].src }
                             } else {
                               var download_link = background_img
                             }
@@ -170,7 +170,7 @@
                             }
                             var background_img = element.display_resources[2].src;
                             if (type_content == `<span class="badge badge-warning">Video</span>`) {
-                              var download_link = element.video_resources[1].src
+                            try { var download_link = element.video_resources[1].src } catch (e) { var download_link = element.video_resources[0].src }
                             } else {
                               var download_link = background_img
                             }
