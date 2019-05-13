@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="utf-8">
+  <title>Instagram Private Download</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/cover.css">
+</head>
+
+<body class="text-center">
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+      <div class="inner">
+        <h3 class="masthead-brand">Private Download</h3>
+        <nav class="nav nav-masthead justify-content-center">
+          <a class="nav-link active" href="#">Истории</a>
+          <a class="nav-link" href="#">О сайте</a>
+        </nav>
+      </div>
+    </header>
+
+    <main role="main" class="inner cover" id="MainArea">
+      <h1 class="cover-heading">Скачивание историй</h1>
+      <p class="lead">Перед тем как начать авторизуйтесь в Instagram с браузера. Как только зайдете возварщайтесь на сайт и жмите "Дальше".</p>
+      <p class="lead">
+        <a href="https://www.instagram.com/accounts/login" target="_blank" class="btn btn-lg btn-primary" id="LoginInst">Авторизация Instagram</a>
+        <a href="#" class="btn btn-lg btn-success disabled" aria-disabled="true" id="Continue1">Дальше</a>
+      </p>
+      <br>
+      <iframe src="https://www.instagram.com/accounts/login" width="500" height="500" align="left">
+   Ваш браузер не поддерживает плавающие фреймы!
+</iframe>
+    </main>
+
+    <footer class="mastfoot mt-auto">
+      <div class="inner">
+        <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+      </div>
+    </footer>
+  </div>
+</body>
+
+<!-- Bootstrap js -->
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<!-- Custom js -->
+<script type="text/javascript">
+
+ $('#LoginInst').on("click", function() {
+    $('#Continue1').removeClass('disabled');
+    $('#Continue1').attr("aria-disabled", "false");
+  });
+
+  $('#Continue1').on("click", function() {
+
+    var hash;
+
+    // Get запрос
+
+    var xhr1 = new XMLHttpRequest();
+
+    xhr1.open("GET", 'https://www.instagram.com/static/bundles/es6/Consumer.js/0d1c70eefeee.js');
+
+    xhr1.onload = function() {
+      if (xhr1.readyState === xhr1.DONE) {
+        if (xhr1.status === 200) {
+          var mytext = xhr1.response;
+
+          console.log(mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3)));
+
+          hash = mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3));
+
+          $('#MainArea').html(
+            `<div class="input-group mb-2 pl-3 pr-3"><input type="text" class="form-control" placeholder="@nickname" id="nickname"><div class="input-group-append"><button class="btn btn-success" type="button" id="Continue2">Дальше</button></div></div><p class="lead">В поле выше введите никнейм пользователя, чьи истории вы хотите скачать. Затем нажмите кнопку "Дальше".</p><br><p class="lead" id="ans"></p>`
+          );
+
+          $('#Continue2').on("click", function() {
+
+            var nickname = $('#nickname').val();
+
+            if ($('#nickname').val().indexOf('@') == -1) {
+
+              // Get запрос
+
+              var xhr2 = new XMLHttpRequest();
+
+              xhr2.open("GET", `https://www.instagram.com/${nickname}/`);
+
+              xhr2.onload = function() {
+                if (xhr2.readyState === xhr2.DONE) {
+                  if (xhr2.status === 200) {
+                    var mytext = xhr2.response;
+                    var userid;
+                    mytext = JSON.parse(mytext.substring(mytext.indexOf(`window._sharedData = `) + 21, mytext.indexOf(`;<\/script>`, mytext.indexOf(`window._sharedData = `) + 21)));
+                    userid = (mytext.entry_data.ProfilePage[0].graphql.user.id);
+                    console.log(userid);
+
+                    // Get запрос
+
+                    var xhr4 = new XMLHttpRequest();
+
+                    xhr4.open("GET",
+                      `https://www.instagram.com/graphql/query/?query_hash=${hash}&variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D`
+                    );
+
+                    xhr4.onload = function() {
+                      if (xhr4.readyState === xhr4.DONE) {
+                        if (xhr4.status === 200) {
+                          var mytext = JSON.parse(xhr4.response);
+                          var cards;
+                          mytext.data.reels_media[1].items.forEach(function(element) {
+
+                            //Выдача переменных
+                            var author_name = element.owner.username;
+                            var long_create = new Date(Date() - elemen.taken_at_timestamp * 1000).getHourse();
+                            if (element.is_video == true) {
+                              var type_content = `<span class="badge badge-warning">Video</span>`
+                            } else {
+                              var type_content = `<span class="badge badge-info">Picture</span>`
+                            }
+                            var background_img = element.display_resources[3].src;
+                            if (type_content == `<span class="badge badge-warning">Video</span>`) {
+                              var download_link = element.video_resources[2].src
+                            } else {
+                              var download_link = background_img
+                            }
+
+                            //Присвоение пермеменных в карточках
+                            cards = cards +
+                              `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right"><a href="${download_link}" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
+                          });
+
+                          //Заменяем страничку на вывод
+                          $('#ans').html(`<div class="card-deck">${cards}</div>`)
+                        }
+                      }
+                    };
+
+                    xhr4.send();
+
+                  }
+                }
+              };
+
+              xhr2.send();
+
+            } else {
+
+              nickname = nickname.substring(1, nickname.length + 1);
+
+              // Get запрос
+
+              var xhr3 = new XMLHttpRequest();
+
+              xhr3.open("GET", `https://www.instagram.com/${nickname}/`);
+
+              xhr3.onload = function() {
+                if (xhr3.readyState === xhr3.DONE) {
+                  if (xhr3.status === 200) {
+                    var mytext = xhr3.response;
+                    var userid;
+                    mytext = JSON.parse(mytext.substring(mytext.indexOf(`window._sharedData = `) + 21, mytext.indexOf(`;<\/script>`, mytext.indexOf(`window._sharedData = `) + 21)));
+                    userid = mytext.entry_data.ProfilePage[0].graphql.user.id;
+
+                    // Get запрос
+
+                    var xhr5 = new XMLHttpRequest();
+
+                    xhr5.open("GET",
+                      `https://www.instagram.com/graphql/query/?query_hash=${hash}&variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D`
+                    );
+
+                    xhr5.onload = function() {
+                      if (xhr5.readyState === xhr5.DONE) {
+                        if (xhr5.status === 200) {
+                          var mytext = JSON.parse(xhr5.response);
+                          var cards;
+                          mytext.data.reels_media[1].items.forEach(function(element) {
+
+                            //Выдача переменных
+                            var author_name = element.owner.username;
+                            var long_create = new Date(Date() - elemen.taken_at_timestamp * 1000).getHourse();
+                            if (element.is_video == true) {
+                              var type_content = `<span class="badge badge-warning">Video</span>`
+                            } else {
+                              var type_content = `<span class="badge badge-info">Picture</span>`
+                            }
+                            var background_img = element.display_resources[3].src;
+                            if (type_content == `<span class="badge badge-warning">Video</span>`) {
+                              var download_link = element.video_resources[2].src
+                            } else {
+                              var download_link = background_img
+                            }
+
+                            //Присвоение пермеменных в карточках
+                            cards = cards +
+                              `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right"><a href="${download_link}" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
+                          });
+
+                          //Заменяем страничку на вывод
+                          $('#ans').html(`<div class="card-deck">${cards}</div>`)
+                        }
+                      }
+                    };
+
+                    xhr5.send();
+
+                  }
+                }
+              };
+
+              xhr3.send();
+
+            }
+          });
+
+        }
+      }
+    };
+
+    xhr1.send();
+
+
+  });
+</script>
+
+</html>
