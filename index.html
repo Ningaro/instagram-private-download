@@ -25,8 +25,8 @@
       <h1 class="cover-heading">Скачивание историй</h1>
       <p class="lead">Перед тем как начать авторизуйтесь в Instagram с браузера. Как только зайдете возварщайтесь на сайт и жмите "Дальше".</p>
       <p class="lead">
-        <a href="https://www.instagram.com/accounts/login" target="_blank" class="btn btn-lg btn-primary" id="LoginInst">Авторизация Instagram</a>
-        <a href="#" class="btn btn-lg btn-success disabled" aria-disabled="true" id="Continue1">Дальше</a>
+        <a href="https://www.instagram.com/accounts/login" target="_blank" class="btn btn-primary col-md-4" id="LoginInst">Авторизация Instagram</a>
+        <a href="#" class="btn btn-success disabled col-md-4" aria-disabled="true" id="Continue1">Дальше</a>
       </p>
       <br>
     </main>
@@ -71,7 +71,7 @@
           hash = mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3));
 
           $('#MainArea').html(
-            `<div class="input-group mb-2 pl-3 pr-3"><input type="text" class="form-control" placeholder="@nickname" id="nickname"><div class="input-group-append"><button class="btn btn-success" type="button" id="Continue2">Дальше</button></div></div><p class="lead">В поле выше введите никнейм пользователя, чьи истории вы хотите скачать. Затем нажмите кнопку "Дальше".</p><br><div class="card-deck" id="ans"></div>`
+            `<div class="input-group mb-2 pl-3 pr-3"><input type="text" class="form-control" placeholder="@nickname" id="nickname"><div class="input-group-append"><button class="btn btn-success" type="button" id="Continue2">Дальше</button></div></div><p class="lead">В поле выше введите никнейм пользователя, чьи истории вы хотите скачать. Затем нажмите кнопку "Дальше".</p><div class=" row justify-content-md-center m-4" id="ans"></div><div class="card-deck" id="cards_ans"></div>`
           );
 
           $('#Continue2').on("click", function() {
@@ -94,7 +94,35 @@
                     mytext = JSON.parse(mytext.substring(mytext.indexOf(`window._sharedData = `) + 21, mytext.indexOf(`;<\/script>`, mytext.indexOf(`window._sharedData = `) + 21)));
                     userid = (mytext.entry_data.ProfilePage[0].graphql.user.id);
                     avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic_url_hd;
-                    $('#ans').html( $('#ans').html() + `<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div>` );
+                    $('#ans').html(`<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&amp;variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div><p class="lead">Перейдите по ссылке и скопируйте содержимое страницы. После вставьте его в поле ниже и нажмите "Обработать".</p></div><br><br><p class="lead"><p class="form-group col-md-12"><textarea id="code_rewive" placeholder="Код сюда" rows="3" class="form-control"></textarea></p><p class="col-md-12"><button type="button" id="Continue3" class="btn btn-success">Обработать</button></p></div>` );
+                    console.log(userid);
+                    console.log(hash);
+
+                    $('#Continue3').on("click", function() {
+                      var somecode = JSON.parse($('#code_rewive').val());
+                      var cards ='';
+                          somecode.data.reels_media[0].items.forEach(function(element) {
+                            //Выдача переменных
+                            var author_name = element.owner.username;
+                            var long_create = Math.round((new Date() - element.taken_at_timestamp * 1000)/1000/3600);
+                            if (element.is_video == true) {
+                              var type_content = `<span class="badge badge-warning">Video</span>`
+                            } else {
+                              var type_content = `<span class="badge badge-info">Picture</span>`
+                            }
+                            var background_img = element.display_resources[2].src;
+                            if (type_content == `<span class="badge badge-warning">Video</span>`) {
+                              var download_link = element.video_resources[1].src
+                            } else {
+                              var download_link = background_img
+                            }
+                            //Присвоение пермеменных в карточках
+                            cards = cards +
+                              `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right"><a href="${download_link}" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
+                          });
+
+                          $('#cards_ans').html(cards);
+                    });
 
 
 
@@ -124,7 +152,38 @@
                     avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic_url_hd;
                     userid = (mytext.entry_data.ProfilePage[0].graphql.user.id);
                     avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic_url_hd;
-                    $('#ans').html( $('#ans').html() + `<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div>` );
+                    $('#ans').html(`<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&amp;variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div><p class="lead">Перейдите по ссылке и скопируйте содержимое страницы. После вставьте его в поле ниже и нажмите "Обработать".</p></div><br><br><p class="lead"><p class="form-group col-md-12"><textarea id="code_rewive" placeholder="Код сюда" rows="3" class="form-control"></textarea></p><p class="col-md-12"><button type="button" id="Continue3" class="btn btn-success">Обработать</button></p></div>` );
+                    console.log(userid);
+                    console.log(hash);
+
+                    $('#Continue3').on("click", function() {
+                      var somecode = JSON.parse($('#code_rewive').val());
+                      var cards ='';
+                          somecode.data.reels_media[0].items.forEach(function(element) {
+                            //Выдача переменных
+                            var author_name = element.owner.username;
+                            var long_create = Math.round((new Date() - element.taken_at_timestamp * 1000)/1000/3600);
+                            if (element.is_video == true) {
+                              var type_content = `<span class="badge badge-warning">Video</span>`
+                            } else {
+                              var type_content = `<span class="badge badge-info">Picture</span>`
+                            }
+                            var background_img = element.display_resources[2].src;
+                            if (type_content == `<span class="badge badge-warning">Video</span>`) {
+                              var download_link = element.video_resources[1].src
+                            } else {
+                              var download_link = background_img
+                            }
+                            //Присвоение пермеменных в карточках
+
+                            console.log(cards);
+
+                            cards = cards +
+                              `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right"><a href="${download_link}" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
+                          });
+                          console.log(cards);
+                          $('#cards_ans').html(cards);
+                    });
 
                   }
                 }
