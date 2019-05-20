@@ -15,7 +15,7 @@
     <header class="masthead mb-auto">
       <div class="inner">
         <h3 class="masthead-brand">Private Download</h3>
-      <!--  <nav class="nav nav-masthead justify-content-center">
+        <!--  <nav class="nav nav-masthead justify-content-center">
           <a class="nav-link active" href="#">Истории</a>
         </nav> -->
       </div>
@@ -23,11 +23,14 @@
 
     <main role="main" class="inner cover" id="MainArea">
       <h1 class="cover-heading">Скачивание историй</h1>
-      <p class="lead">Перед тем как начать авторизуйтесь в Instagram с браузера. Как только зайдете возварщайтесь на сайт и жмите "Дальше".</p>
-      <p class="lead">
+      <p class="lead">Перед тем как начать авторизуйтесь в Instagram с браузера. Как только зайдете возвращайтесь на сайт и жмите "Дальше". Также скачать истории через телеграмм, для этого нужно написать что-нибудь <a href="http://t.me/InstPrivateBot"class="textLink" target="_blank">нашему боту</a> и указать ваш ник в Telegram ниже.</p>
+      <div class="lead">
         <a href="https://www.instagram.com/accounts/login" target="_blank" class="btn btn-primary col-md-4" id="LoginInst">Авторизация Instagram</a>
-        <a href="#" class="btn btn-success col-md-4" id="Continue1">Дальше</a>
-      </p>
+        <div class="col-md-3 mb-1 mt-1 inputTG" style="display: inline-block;">
+          <input class="form-control" type="text" placeholder="Telegram username" id="nicknameTG">
+        </div>
+        <a class="btn btn-success col-md-2" id="Continue1">Дальше</a>
+      </div>
       <br>
     </main>
 
@@ -43,16 +46,62 @@
 <script src="js/jquery-3.4.1.min.js"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-
 <!-- Custom js -->
 <script type="text/javascript">
-/*  $('#LoginInst').on("click", function() {
-    $('#Continue1').removeClass('disabled');
-    $('#Continue1').attr("aria-disabled", "false");
-  }); */
+  const TGtoken = '760512401:AAEJglZ3nuXHINY6ulqZlGjRtXdlaEcV9AE';
+  /*  $('#LoginInst').on("click", function() {
+      $('#Continue1').removeClass('disabled');
+      $('#Continue1').attr("aria-disabled", "false");
+    }); */
+
+  function sendTelegarm(receiverID, msg, token) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", `https://api.telegram.org/bot${token}/sendMessage?chat_id=${receiverID}&text=${encodeURI(msg)}&parse_mode=HTML`);
+
+    xhr.onload = function() {
+      if (xhr.readyState === xhr.DONE) {
+        if (xhr.status === 200) {
+
+        }
+      }
+    }
+    xhr.send();
+  }
+
   $('#Continue1').on("click", function() {
 
     var hash;
+
+    //загрузка данных из поля телеграмма
+
+    var receiverIDTG;
+
+    var inputTg = $('#nicknameTG').val();
+
+    if (inputTg != "") {
+
+      var xhr6 = new XMLHttpRequest();
+
+      xhr6.open("GET", `https://api.telegram.org/bot${TGtoken}/getUpdates?limit=10`);
+
+      xhr6.onload = function() {
+        if (xhr6.readyState === xhr6.DONE) {
+          if (xhr6.status === 200) {
+            var TGevents = JSON.parse(xhr6.response);
+            TGevents.result.forEach(function(element) {
+              if (element.message.from.username == inputTg) {
+                receiverIDTG = element.message.from.id;
+              }
+            });
+          }
+        }
+      }
+      xhr6.send();
+
+    } else {
+      receiverIDTG = 'nobody=(';
+    }
 
     // Get запрос
 
@@ -93,34 +142,49 @@
                     mytext = JSON.parse(mytext.substring(mytext.indexOf(`window._sharedData = `) + 21, mytext.indexOf(`;<\/script>`, mytext.indexOf(`window._sharedData = `) + 21)));
                     userid = (mytext.entry_data.ProfilePage[0].graphql.user.id);
                     avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic_url_hd;
-                    $('#ans').html(`<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&amp;variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div><p class="lead">Перейдите по ссылке и скопируйте содержимое страницы. После вставьте его в поле ниже и нажмите "Обработать".</p></div><br><br><p class="lead"><p class="form-group col-md-12"><textarea id="code_rewive" placeholder="Код сюда" rows="3" class="form-control"></textarea></p><p class="col-md-12"><button type="button" id="Continue3" class="btn btn-success">Обработать</button></p></div>` );
+                    $('#ans').html(
+                      `<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&amp;variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div><p class="lead">Перейдите по ссылке и скопируйте содержимое страницы. После вставьте его в поле ниже и нажмите "Обработать".</p></div><br><br><p class="lead"><p class="form-group col-md-12"><textarea id="code_rewive" placeholder="Код сюда" rows="3" class="form-control"></textarea></p><p class="col-md-12"><button type="button" id="Continue3" class="btn btn-success">Обработать</button></p></div>`
+                    );
                     console.log(userid);
                     console.log(hash);
 
                     $('#Continue3').on("click", function() {
                       var somecode = JSON.parse($('#code_rewive').val());
-                      var cards ='';
-                          somecode.data.reels_media[0].items.forEach(function(element) {
-                            //Выдача переменных
-                            var author_name = element.owner.username;
-                            var long_create = Math.round((new Date() - element.taken_at_timestamp * 1000)/1000/3600);
-                            if (element.is_video == true) {
-                              var type_content = `<span class="badge badge-warning">Video</span>`
-                            } else {
-                              var type_content = `<span class="badge badge-info">Picture</span>`
-                            }
-                            var background_img = element.display_resources[2].src;
-                            if (type_content == `<span class="badge badge-warning">Video</span>`) {
-                            try { var download_link = element.video_resources[1].src } catch (e) { var download_link = element.video_resources[0].src }
-                            } else {
-                              var download_link = background_img
-                            }
-                            //Присвоение пермеменных в карточках
-                            cards = cards +
-                              `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right"><a href="${download_link}" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
-                          });
+                      var cards = '';
+                      somecode.data.reels_media[0].items.forEach(function(element) {
+                        //Выдача переменных
+                        var author_name = element.owner.username;
+                        var long_create = Math.round((new Date() - element.taken_at_timestamp * 1000) / 1000 / 3600);
+                        if (element.is_video == true) {
+                          var type_content = `<span class="badge badge-warning">Video</span>`
+                        } else {
+                          var type_content = `<span class="badge badge-info">Picture</span>`
+                        }
+                        var background_img = element.display_resources[2].src;
+                        if (type_content == `<span class="badge badge-warning">Video</span>`) {
+                          try {
+                            var download_link = element.video_resources[1].src
+                          } catch (e) {
+                            var download_link = element.video_resources[0].src
+                          }
+                        } else {
+                          var download_link = background_img
+                        }
+                        //Присвоение пермеменных в карточках
 
-                          $('#cards_ans').html(cards);
+                        var telegram_link;
+
+                        if (receiverIDTG == 'nobody=(') {
+                          telegram_link = '';
+                        } else {
+                          telegram_link = `<a onclick="sendTelegarm(${receiverIDTG}, '<b>${author_name}</b>\\n${download_link}', '${TGtoken}')" role="button" class="btn btn-primary mr-1">Сохранить в TG</a>`;
+                        }
+
+                        cards = cards +
+                          `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right">${telegram_link}<a href="${download_link}" target="_blank" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
+                      });
+                      console.log(cards);
+                      $('#cards_ans').html(cards);
                     });
 
 
@@ -148,40 +212,52 @@
                     var userid;
                     mytext = JSON.parse(mytext.substring(mytext.indexOf(`window._sharedData = `) + 21, mytext.indexOf(`;<\/script>`, mytext.indexOf(`window._sharedData = `) + 21)));
                     userid = mytext.entry_data.ProfilePage[0].graphql.user.id;
-                    avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic_url_hd;
+                    avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic__hd;
                     userid = (mytext.entry_data.ProfilePage[0].graphql.user.id);
                     avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic_url_hd;
-                    $('#ans').html(`<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&amp;variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div><p class="lead">Перейдите по ссылке и скопируйте содержимое страницы. После вставьте его в поле ниже и нажмите "Обработать".</p></div><br><br><p class="lead"><p class="form-group col-md-12"><textarea id="code_rewive" placeholder="Код сюда" rows="3" class="form-control"></textarea></p><p class="col-md-12"><button type="button" id="Continue3" class="btn btn-success">Обработать</button></p></div>` );
+                    $('#ans').html(
+                      `<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&amp;variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div><p class="lead">Перейдите по ссылке и скопируйте содержимое страницы. После вставьте его в поле ниже и нажмите "Обработать".</p></div><br><br><p class="lead"><p class="form-group col-md-12"><textarea id="code_rewive" placeholder="Код сюда" rows="3" class="form-control"></textarea></p><p class="col-md-12"><button type="button" id="Continue3" class="btn btn-success">Обработать</button></p></div>`
+                    );
                     console.log(userid);
                     console.log(hash);
 
                     $('#Continue3').on("click", function() {
                       var somecode = JSON.parse($('#code_rewive').val());
-                      var cards ='';
-                          somecode.data.reels_media[0].items.forEach(function(element) {
-                            //Выдача переменных
-                            var author_name = element.owner.username;
-                            var long_create = Math.round((new Date() - element.taken_at_timestamp * 1000)/1000/3600);
-                            if (element.is_video == true) {
-                              var type_content = `<span class="badge badge-warning">Video</span>`
-                            } else {
-                              var type_content = `<span class="badge badge-info">Picture</span>`
-                            }
-                            var background_img = element.display_resources[2].src;
-                            if (type_content == `<span class="badge badge-warning">Video</span>`) {
-                            try { var download_link = element.video_resources[1].src } catch (e) { var download_link = element.video_resources[0].src }
-                            } else {
-                              var download_link = background_img
-                            }
-                            //Присвоение пермеменных в карточках
+                      var cards = '';
+                      somecode.data.reels_media[0].items.forEach(function(element) {
+                        //Выдача переменных
+                        var author_name = element.owner.username;
+                        var long_create = Math.round((new Date() - element.taken_at_timestamp * 1000) / 1000 / 3600);
+                        if (element.is_video == true) {
+                          var type_content = `<span class="badge badge-warning">Video</span>`
+                        } else {
+                          var type_content = `<span class="badge badge-info">Picture</span>`
+                        }
+                        var background_img = element.display_resources[2].src;
+                        if (type_content == `<span class="badge badge-warning">Video</span>`) {
+                          try {
+                            var download_link = element.video_resources[1].src
+                          } catch (e) {
+                            var download_link = element.video_resources[0].src
+                          }
+                        } else {
+                          var download_link = background_img
+                        }
+                        //Присвоение пермеменных в карточках
 
-                            console.log(cards);
+                        var telegram_link;
 
-                            cards = cards +
-                              `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right"><a href="${download_link}" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
-                          });
-                          console.log(cards);
-                          $('#cards_ans').html(cards);
+                        if (receiverIDTG == 'nobody=(') {
+                          telegram_link = '';
+                        } else {
+                          telegram_link = `<a onclick="sendTelegarm(${receiverIDTG}, '<b>${author_name}</b>\\n${download_link}', '${TGtoken}')" role="button" class="btn btn-primary mr-1">Сохранить в TG</a>`;
+                        }
+
+                        cards = cards +
+                          `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right">${telegram_link}<a href="${download_link}" target="_blank" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
+                      });
+                      console.log(cards);
+                      $('#cards_ans').html(cards);
                     });
 
                   }

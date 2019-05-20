@@ -2,11 +2,23 @@
  * Globals
  */
 
+/* Sm экраны */
+
+@media (max-width: 576px) {
+.inputTG {
+  padding-left: 0px;
+  padding-right:  0px;
+}
+ }
+
 /* Links */
 a,
 a:focus,
 a:hover {
   color: #fff;
+}
+.textLink {
+    text-decoration: underline;
 }
 
 /* Custom default button */
