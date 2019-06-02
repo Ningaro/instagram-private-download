@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta charset="utf-8">
   <title>Instagram Private Download</title>
+  <link rel="icon" type="image/png" href="img/PrivateDownload.png" />
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/cover.css">
@@ -23,13 +24,18 @@
 
     <main role="main" class="inner cover" id="MainArea">
       <h1 class="cover-heading">Скачивание историй</h1>
-      <p class="lead">Перед тем как начать авторизуйтесь в Instagram с браузера. Как только зайдете возвращайтесь на сайт и жмите "Дальше". Также скачать истории через телеграмм, для этого нужно написать что-нибудь <a href="http://t.me/InstPrivateBot"class="textLink" target="_blank">нашему боту</a> и указать ваш ник в Telegram ниже.</p>
-      <div class="lead">
-        <a href="https://www.instagram.com/accounts/login" target="_blank" class="btn btn-primary col-md-4" id="LoginInst">Авторизация Instagram</a>
-        <div class="col-md-4 mb-1 mt-1 inputTG" style="display: inline-block;">
+      <p class="lead">Перед тем как начать авторизуйтесь в Instagram с браузера. Как только зайдете возвращайтесь на сайт и жмите "Дальше". Также скачать истории можно через телеграмм, для этого нужно написать что-нибудь <a href="http://t.me/InstPrivateBot"
+          class="textLink" target="_blank">нашему боту</a> и указать ваш ник в Telegram ниже.</p>
+      <div class="row">
+        <a href="https://www.instagram.com/accounts/login" target="_blank" class="btn btn-primary col-md-4 mb-1 mt-1" id="LoginInst" style="height: 38px;">Авторизация Instagram</a>
+        <div class="col-md-5 mb-1 mt-1 inputTG" style="display: inline-block;">
           <input class="form-control" type="text" placeholder="Telegram username" id="nicknameTG">
+          <div class="invalid-feedback">Отсутствует доступ к серверам Telegram, попробуйте включить VPN.</div>
         </div>
-        <a class="btn btn-success col-md-2" id="Continue1">Дальше</a>
+        <button class="btn btn-success col-md-3 mb-1 mt-1" type="button" id="Continue1" style="height: 38px;">
+          <!-- <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> -->
+          Дальше
+        </button>
       </div>
       <br>
     </main>
@@ -69,39 +75,54 @@
     xhr.send();
   }
 
-  $('#Continue1').on("click", function() {
+  var receiverIDTG = "nobody=("; //ID пользователя из Телеграмма
 
-    var hash;
-
-    //загрузка данных из поля телеграмма
-
-    var receiverIDTG;
-
-    var inputTg = $('#nicknameTG').val();
-
-    if (inputTg != "") {
-
-      var xhr6 = new XMLHttpRequest();
-
-      xhr6.open("GET", `https://api.telegram.org/bot${TGtoken}/getUpdates?limit=10`);
-
-      xhr6.onload = function() {
-        if (xhr6.readyState === xhr6.DONE) {
-          if (xhr6.status === 200) {
-            var TGevents = JSON.parse(xhr6.response);
+  $("#nicknameTG").on('input', function() {
+    console.log(`${$('#nicknameTG').val()}`);
+    var name_str = $('#nicknameTG').val();
+    if (name_str != "") {
+      //  $("#nicknameTG").removeClass("is-invalid");
+      $("#Continue1").addClass("disabled");
+      $("#Continue1").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Дальше`);
+      //Запрос к API Телеграмма
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", `https://api.telegram.org/bot${TGtoken}/getUpdates?limit=30`);
+      xhr.timeout = 2000; // таймаут в млс
+      xhr.onload = function() {
+        if (xhr.readyState === xhr.DONE) {
+          if (xhr.status === 200) {
+            var TGevents = JSON.parse(xhr.response);
             TGevents.result.forEach(function(element) {
-              if (element.message.from.username == inputTg) {
+              if (element.message.from.username == name_str) {
+                $("#nicknameTG").removeClass("is-invalid");
                 receiverIDTG = element.message.from.id;
+                $("#Continue1").removeClass("disabled");
+                $("#Continue1").html(`Дальше`);
+              } else {
+
+                  $(".invalid-feedback").html(`Кажется наш бот из Telegram не смог вас найти, напишите ему еще разок)`);
+                  $("#nicknameTG").addClass("is-invalid");
+
               }
             });
           }
         }
       }
-      xhr6.send();
-
+      xhr.ontimeout = function(e) {
+        $(".invalid-feedback").html(`Отсутствует доступ к серверам Telegram, попробуйте включить VPN.`);
+        $("#nicknameTG").addClass("is-invalid");
+      };
+      xhr.send();
     } else {
-      receiverIDTG = 'nobody=(';
+      $("#Continue1").removeClass("disabled");
+      $("#nicknameTG").removeClass("is-invalid");
+      $("#Continue1").html(`Дальше`);
     }
+  });
+
+  $('#Continue1').on("click", function() {
+
+    var hash;
 
     // Get запрос
 
