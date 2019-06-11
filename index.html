@@ -60,6 +60,13 @@
       $('#Continue1').attr("aria-disabled", "false");
     }); */
 
+//Отличный фикс xD
+    $( document ).ready(function() {
+        var fixbackground = setInterval(function() {
+                  $("body").css("height", `${$(document).height()}px`);
+                }, 10);
+    });
+
   function sendTelegarm(receiverID, msg, token) {
     var xhr = new XMLHttpRequest();
 
