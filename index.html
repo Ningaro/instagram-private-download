@@ -29,7 +29,7 @@
       <div class="row">
         <a href="https://www.instagram.com/accounts/login" target="_blank" class="btn btn-primary col-md-4 mb-1 mt-1" id="LoginInst" style="height: 38px;">Авторизация Instagram</a>
         <div class="col-md-5 mb-1 mt-1 inputTG" style="display: inline-block;">
-          <input class="form-control" type="text" placeholder="Telegram username" id="nicknameTG">
+          <input class="form-control" type="text" placeholder="Telegram username" id="nicknameTG" name="telegram" autocomplete="on">
           <div class="invalid-feedback">Отсутствует доступ к серверам Telegram, попробуйте включить VPN.</div>
         </div>
         <button class="btn btn-success col-md-3 mb-1 mt-1" type="button" id="Continue1" style="height: 38px;">
@@ -121,6 +121,8 @@
   });
 
   $('#Continue1').on("click", function() {
+    if (!$("#Continue1").hasClass("disabled")) {
+
 
     var hash;
 
@@ -140,7 +142,7 @@
           hash = mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3));
 
           $('#MainArea').html(
-            `<div class="input-group mb-2 pl-3 pr-3"><input type="text" class="form-control" placeholder="@nickname" id="nickname"><div class="input-group-append"><button class="btn btn-success" type="button" id="Continue2">Дальше</button></div></div><p class="lead">В поле выше введите никнейм пользователя, чьи истории вы хотите скачать. Затем нажмите кнопку "Дальше".</p><div class=" row justify-content-md-center m-4" id="ans"></div><div class="card-deck" id="cards_ans"></div>`
+            `<div class="input-group mb-2 pl-3 pr-3"><input type="text" name="inst" autocomplete="on" class="form-control" placeholder="@nickname" id="nickname"><div class="input-group-append"><button class="btn btn-success" type="button" id="Continue2">Дальше</button></div></div><p class="lead">В поле выше введите никнейм пользователя, чьи истории вы хотите скачать. Затем нажмите кнопку "Дальше".</p><div class=" row justify-content-md-center m-4" id="ans"></div><div class="card-deck" id="cards_ans"></div>`
           );
 
           $('#Continue2').on("click", function() {
@@ -295,7 +297,7 @@
     };
 
     xhr1.send();
-
+}
 
   });
 </script>
