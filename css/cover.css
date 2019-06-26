@@ -1,6 +1,13 @@
 /*
  * Globals
  */
+/* Md+ экраны */
+
+ @media (min-width: 577px) {
+ .mar-20 {
+   margin-top: 20px;
+ }
+  }
 
 /* Sm экраны */
 

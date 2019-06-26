@@ -18,14 +18,14 @@
 
     gtag('config', 'UA-61547474-3');
   </script>
-  <!--Google ADS Кущац хачу, трое детей!-->
+  <!--Google ADS Кущац хачу, трое детей!
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({
       google_ad_client: "ca-pub-6581936358228989",
       enable_page_level_ads: true
     });
-  </script>
+  </script>-->
 </head>
 
 <body class="text-center">
@@ -73,16 +73,16 @@
 <script type="text/javascript">
   const TGtoken = '760512401:AAEJglZ3nuXHINY6ulqZlGjRtXdlaEcV9AE';
   /*  $('#LoginInst').on("click", function() {
-      $('#Continue1').removeClass('disabled');
-      $('#Continue1').attr("aria-disabled", "false");
-    }); */
+    $('#Continue1').removeClass('disabled');
+    $('#Continue1').attr("aria-disabled", "false");
+  }); */
 
-//Отличный фикс xD
-    $( document ).ready(function() {
-        var fixbackground = setInterval(function() {
-                  $("body").css("height", `${$(document).height()}px`);
-                }, 10);
-    });
+  //Отличный фикс xD
+  $(document).ready(function() {
+    var fixbackground = setInterval(function() {
+      $("body").css("height", `${$(document).height()}px`);
+    }, 10);
+  });
 
   function sendTelegarm(receiverID, msg, token) {
     var xhr = new XMLHttpRequest();
@@ -99,42 +99,49 @@
     xhr.send();
   }
 
-  var receiverIDTG = "nobody=("; //ID пользователя из Телеграмма
+  var receiverIDTG; //ID пользователя из Телеграмма
 
   $("#nicknameTG").on('input', function() {
-    console.log(`${$('#nicknameTG').val()}`);
+    var receiverIDTG = "nobody=(";
     var name_str = $('#nicknameTG').val();
+    console.log($('#nicknameTG').val());
     if (name_str != "") {
-      //  $("#nicknameTG").removeClass("is-invalid");
       $("#Continue1").addClass("disabled");
       $("#Continue1").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Дальше`);
       //Запрос к API Телеграмма
       var xhr = new XMLHttpRequest();
       xhr.open("GET", `https://api.telegram.org/bot${TGtoken}/getUpdates?limit=30`);
-      xhr.timeout = 2000; // таймаут в млс
+      xhr.timeout = 3000; // таймаут в msec
       xhr.onload = function() {
         if (xhr.readyState === xhr.DONE) {
           if (xhr.status === 200) {
+            console.log(`Запрос пришел успешно, начинаю обработку.`);
             var TGevents = JSON.parse(xhr.response);
             TGevents.result.forEach(function(element) {
               if (element.message.from.username == name_str) {
-                $("#nicknameTG").removeClass("is-invalid");
                 receiverIDTG = element.message.from.id;
-                $("#Continue1").removeClass("disabled");
-                $("#Continue1").html(`Дальше`);
-              } else {
-
-                  $(".invalid-feedback").html(`Кажется наш бот из Telegram не смог вас найти, напишите ему еще разок)`);
-                  $("#nicknameTG").addClass("is-invalid");
-
               }
             });
+            if (name_str == $('#nicknameTG').val()) {
+              if (receiverIDTG == `nobody=(`) {
+                console.log(`Ник не найден в логе =(`);
+                $(".invalid-feedback").html(`Кажется наш бот из Telegram не смог вас найти, напишите ему еще разок)`);
+                $("#nicknameTG").addClass("is-invalid");
+              } else {
+                $("#nicknameTG").removeClass("is-invalid");
+                $("#Continue1").removeClass("disabled");
+                $("#Continue1").html(`Дальше`);
+                console.log(`Ник найден в логе`);
+              }
+            }
           }
         }
       }
       xhr.ontimeout = function(e) {
-        $(".invalid-feedback").html(`Отсутствует доступ к серверам Telegram, попробуйте включить VPN.`);
-        $("#nicknameTG").addClass("is-invalid");
+        if (name_str == $('#nicknameTG').val()) {
+          $(".invalid-feedback").html(`Отсутствует доступ к серверам Telegram, попробуйте включить VPN.`);
+          $("#nicknameTG").addClass("is-invalid");
+        }
       };
       xhr.send();
     } else {
@@ -148,32 +155,36 @@
     if (!$("#Continue1").hasClass("disabled")) {
 
 
-    var hash;
+      var hash;
 
-    // Get запрос
+      // Get запрос
 
-    var xhr1 = new XMLHttpRequest();
+      var xhr1 = new XMLHttpRequest();
 
-    xhr1.open("GET", 'https://www.instagram.com/static/bundles/es6/Consumer.js/0d1c70eefeee.js');
+      xhr1.open("GET", 'https://www.instagram.com/static/bundles/es6/Consumer.js/0d1c70eefeee.js');
 
-    xhr1.onload = function() {
-      if (xhr1.readyState === xhr1.DONE) {
-        if (xhr1.status === 200) {
-          var mytext = xhr1.response;
+      xhr1.onload = function() {
+        if (xhr1.readyState === xhr1.DONE) {
+          if (xhr1.status === 200) {
+            var mytext = xhr1.response;
 
-          console.log(mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3)));
+            console.log(mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3)));
 
-          hash = mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3));
+            hash = mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3));
 
-          $('#MainArea').html(
-            `<div class="input-group mb-2 pl-3 pr-3"><input type="text" name="inst" autocomplete="on" class="form-control" placeholder="@nickname" id="nickname"><div class="input-group-append"><button class="btn btn-success" type="button" id="Continue2">Дальше</button></div></div><p class="lead">В поле выше введите никнейм пользователя, чьи истории вы хотите скачать. Затем нажмите кнопку "Дальше".</p><div class=" row justify-content-md-center m-4" id="ans"></div><div class="card-deck" id="cards_ans"></div>`
-          );
+            $('#MainArea').html(
+              `<div class="input-group mb-2 pl-3 pr-3"><input type="text" name="inst" autocomplete="on" class="form-control" placeholder="@nickname" id="nickname"><div class="input-group-append"><button class="btn btn-success" type="button" id="Continue2">Дальше</button></div></div><p class="lead">В поле выше введите никнейм пользователя, чьи истории вы хотите скачать. Затем нажмите кнопку "Дальше".</p><div class=" row justify-content-md-center m-4" id="ans"></div><div id="cards_ans"></div>`
+            );
 
-          $('#Continue2').on("click", function() {
+            $('#Continue2').on("click", function() {
 
-            var nickname = $('#nickname').val();
+              var nickname = $('#nickname').val();
 
-            if ($('#nickname').val().indexOf('@') == -1) {
+              if ($('#nickname').val().indexOf('@') != -1) {
+                nickname = nickname.substring(1, nickname.length + 1);
+              }
+
+
 
               // Get запрос
 
@@ -198,6 +209,7 @@
                     $('#Continue3').on("click", function() {
                       var somecode = JSON.parse($('#code_rewive').val());
                       var cards = '';
+                      var countSplit = 1;
                       somecode.data.reels_media[0].items.forEach(function(element) {
                         //Выдача переменных
                         var author_name = element.owner.username;
@@ -226,12 +238,26 @@
                         } else {
                           telegram_link = `<a onclick="sendTelegarm(${receiverIDTG}, '<b>${author_name}</b>\\n${download_link}', '${TGtoken}')" role="button" class="btn btn-primary mr-1">Сохранить в TG</a>`;
                         }
-
-                        cards = cards +
-                          `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right">${telegram_link}<a href="${download_link}" target="_blank" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
+                        if (countSplit % 2 != 0) {
+                          countSplit++;
+                          cards = cards +
+                            `<div class="card-deck mar-20"><div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}<span class="float-right">${long_create} ч.</span></h5><p class="card-text text-right" style="margin-top: 160%;">${telegram_link}<a href="${download_link}" target="_blank" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
+                        } else {
+                          countSplit++;
+                          cards = cards +
+                            `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}<span class="float-right">${long_create} ч.</span></h5><p class="card-text text-right" style="margin-top: 160%;">${telegram_link}<a href="${download_link}" target="_blank" role="button" class="btn btn-success">Скачать</a></p></div></div></div>`;
+                        }
                       });
                       console.log(cards);
-                      $('#cards_ans').html(cards);
+                      countSplit--;
+                      console.log(`countSplit - ${countSplit}`);
+                      if (countSplit % 2 == 0) {
+                        $('#cards_ans').html(cards);
+                      } else {
+                        cards = cards +
+                          `<div class="card bg-dark text-white" style="background-color: #00ffff00!important;border-color: #00ffff00;"></div></div>`; //Пустая карточка
+                        $('#cards_ans').html(cards);
+                      }
                     });
 
 
@@ -241,87 +267,14 @@
               };
 
               xhr2.send();
+            });
 
-            } else {
-
-              nickname = nickname.substring(1, nickname.length + 1);
-
-              // Get запрос
-
-              var xhr3 = new XMLHttpRequest();
-
-              xhr3.open("GET", `https://www.instagram.com/${nickname}/`);
-
-              xhr3.onload = function() {
-                if (xhr3.readyState === xhr3.DONE) {
-                  if (xhr3.status === 200) {
-                    var mytext = xhr3.response;
-                    var userid;
-                    mytext = JSON.parse(mytext.substring(mytext.indexOf(`window._sharedData = `) + 21, mytext.indexOf(`;<\/script>`, mytext.indexOf(`window._sharedData = `) + 21)));
-                    userid = mytext.entry_data.ProfilePage[0].graphql.user.id;
-                    avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic__hd;
-                    userid = (mytext.entry_data.ProfilePage[0].graphql.user.id);
-                    avatar = mytext.entry_data.ProfilePage[0].graphql.user.profile_pic_url_hd;
-                    $('#ans').html(
-                      `<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&amp;variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div><p class="lead">Перейдите по ссылке и скопируйте содержимое страницы. После вставьте его в поле ниже и нажмите "Обработать".</p></div><br><br><p class="lead"><p class="form-group col-md-12"><textarea id="code_rewive" placeholder="Код сюда" rows="3" class="form-control"></textarea></p><p class="col-md-12"><button type="button" id="Continue3" class="btn btn-success">Обработать</button></p></div>`
-                    );
-                    console.log(userid);
-                    console.log(hash);
-
-                    $('#Continue3').on("click", function() {
-                      var somecode = JSON.parse($('#code_rewive').val());
-                      var cards = '';
-                      somecode.data.reels_media[0].items.forEach(function(element) {
-                        //Выдача переменных
-                        var author_name = element.owner.username;
-                        var long_create = Math.round((new Date() - element.taken_at_timestamp * 1000) / 1000 / 3600);
-                        if (element.is_video == true) {
-                          var type_content = `<span class="badge badge-warning">Video</span>`
-                        } else {
-                          var type_content = `<span class="badge badge-info">Picture</span>`
-                        }
-                        var background_img = element.display_resources[2].src;
-                        if (type_content == `<span class="badge badge-warning">Video</span>`) {
-                          try {
-                            var download_link = element.video_resources[1].src
-                          } catch (e) {
-                            var download_link = element.video_resources[0].src
-                          }
-                        } else {
-                          var download_link = background_img
-                        }
-                        //Присвоение пермеменных в карточках
-
-                        var telegram_link;
-
-                        if (receiverIDTG == 'nobody=(') {
-                          telegram_link = '';
-                        } else {
-                          telegram_link = `<a onclick="sendTelegarm(${receiverIDTG}, '<b>${author_name}</b>\\n${download_link}', '${TGtoken}')" role="button" class="btn btn-primary mr-1">Сохранить в TG</a>`;
-                        }
-
-                        cards = cards +
-                          `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}</h5><p class="card-text text-left" style="margin-top: 150%;">${long_create} ч.</p>                            <p class="card-text text-right">${telegram_link}<a href="${download_link}" target="_blank" role="button" class="btn btn-success">Скачать</a></p></div></div>`;
-                      });
-                      console.log(cards);
-                      $('#cards_ans').html(cards);
-                    });
-
-                  }
-                }
-              };
-
-              xhr3.send();
-
-            }
-          });
-
+          }
         }
-      }
-    };
+      };
 
-    xhr1.send();
-}
+      xhr1.send();
+    }
 
   });
 </script>
