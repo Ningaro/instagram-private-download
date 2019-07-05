@@ -102,7 +102,7 @@
   var receiverIDTG; //ID пользователя из Телеграмма
 
   $("#nicknameTG").on('input', function() {
-    var receiverIDTG = "nobody=(";
+    receiverIDTG = "nobody=(";
     var name_str = $('#nicknameTG').val();
     console.log($('#nicknameTG').val());
     if (name_str != "") {
@@ -110,18 +110,13 @@
       $("#Continue1").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Дальше`);
       //Запрос к API Телеграмма
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", `https://api.telegram.org/bot${TGtoken}/getUpdates?limit=30`);
-      xhr.timeout = 3000; // таймаут в msec
+      xhr.open("GET", `http://futo.lordsfiles.in/?type=search&id=instsave&str=${name_str}`);
+      xhr.timeout = 10000; // таймаут в msec
       xhr.onload = function() {
         if (xhr.readyState === xhr.DONE) {
           if (xhr.status === 200) {
             console.log(`Запрос пришел успешно, начинаю обработку.`);
-            var TGevents = JSON.parse(xhr.response);
-            TGevents.result.forEach(function(element) {
-              if (element.message.from.username == name_str) {
-                receiverIDTG = element.message.from.id;
-              }
-            });
+            if (xhr.response != '') receiverIDTG = xhr.response; console.log(`receiverIDTG ${xhr.response}`);
             if (name_str == $('#nicknameTG').val()) {
               if (receiverIDTG == `nobody=(`) {
                 console.log(`Ник не найден в логе =(`);
@@ -154,6 +149,7 @@
   $('#Continue1').on("click", function() {
     if (!$("#Continue1").hasClass("disabled")) {
 
+      console.log(receiverIDTG);
 
       var hash;
 
