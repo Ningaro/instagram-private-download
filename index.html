@@ -71,11 +71,6 @@
 <script src="js/bootstrap.min.js"></script>
 <!-- Custom js -->
 <script type="text/javascript">
-  const TGtoken = '760512401:AAEJglZ3nuXHINY6ulqZlGjRtXdlaEcV9AE';
-  /*  $('#LoginInst').on("click", function() {
-    $('#Continue1').removeClass('disabled');
-    $('#Continue1').attr("aria-disabled", "false");
-  }); */
 
   //Отличный фикс xD
   $(document).ready(function() {
@@ -87,7 +82,10 @@
   function sendTelegarm(receiverID, msg, token) {
     var xhr = new XMLHttpRequest();
 
-    xhr.open("GET", `https://api.telegram.org/bot${token}/sendMessage?chat_id=${receiverID}&text=${encodeURI(msg)}&parse_mode=HTML`);
+    var body = `type=send&id=instsave&chat_id=${receiverID}&msg=${encodeURIComponent(msg)}`;
+
+    xhr.open("POST", `http://futo.lordsfiles.in`);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
     xhr.onload = function() {
       if (xhr.readyState === xhr.DONE) {
@@ -96,7 +94,7 @@
         }
       }
     }
-    xhr.send();
+    xhr.send(body);
   }
 
   var receiverIDTG; //ID пользователя из Телеграмма
@@ -223,7 +221,7 @@
                         if (receiverIDTG == 'nobody=(') {
                           telegram_link = '';
                         } else {
-                          telegram_link = `<a onclick="sendTelegarm(${receiverIDTG}, '<b>${author_name}</b>\\n${download_link}', '${TGtoken}')" role="button" class="btn btn-primary mr-1">Сохранить в TG</a>`;
+                          telegram_link = `<a onclick="sendTelegarm(${receiverIDTG}, '<b>${author_name}</b>\\n${download_link}')" role="button" class="btn btn-primary mr-1">Сохранить в TG</a>`;
                         }
                         if (countSplit % 2 != 0) {
                           countSplit++;
