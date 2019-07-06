@@ -104,19 +104,17 @@
   $("#nicknameTG").on('input', function() {
     receiverIDTG = "nobody=(";
     var name_str = $('#nicknameTG').val();
-    console.log($('#nicknameTG').val());
     if (name_str != "") {
       $("#Continue1").addClass("disabled");
       $("#Continue1").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span> Дальше`);
       //Запрос к API Телеграмма
       var xhr = new XMLHttpRequest();
       xhr.open("GET", `http://futo.lordsfiles.in/?type=search&id=instsave&str=${name_str}`);
-      xhr.timeout = 10000; // таймаут в msec
+      xhr.timeout = 2500; // таймаут в msec
       xhr.onload = function() {
         if (xhr.readyState === xhr.DONE) {
           if (xhr.status === 200) {
-            console.log(`Запрос пришел успешно, начинаю обработку.`);
-            if (xhr.response != '') receiverIDTG = xhr.response; console.log(`receiverIDTG ${xhr.response}`);
+            if (xhr.response != '') receiverIDTG = xhr.response;
             if (name_str == $('#nicknameTG').val()) {
               if (receiverIDTG == `nobody=(`) {
                 console.log(`Ник не найден в логе =(`);
@@ -149,8 +147,6 @@
   $('#Continue1').on("click", function() {
     if (!$("#Continue1").hasClass("disabled")) {
 
-      console.log(receiverIDTG);
-
       var hash;
 
       // Get запрос
@@ -163,8 +159,6 @@
         if (xhr1.readyState === xhr1.DONE) {
           if (xhr1.status === 200) {
             var mytext = xhr1.response;
-
-            console.log(mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3)));
 
             hash = mytext.substring(mytext.indexOf(`h="`) + 3, mytext.indexOf(`"`, mytext.indexOf(`h="`) + 3));
 
@@ -199,9 +193,6 @@
                     $('#ans').html(
                       `<div class="card text-white bg-dark mb-3" style="max-width: 18rem;"><div class="card-header"><img src="${avatar}" width="30px"> ${nickname}</div><div class="card-body"><p class="card-text"><a href="https://www.instagram.com/graphql/query/?query_hash=${hash}&amp;variables=%0A%7B%22reel_ids%22%3A%5B%22${userid}%22%5D%2C%22tag_names%22%3A%5B%5D%2C%22location_ids%22%3A%5B%5D%2C%22highlight_reel_ids%22%3A%5B%5D%2C%22precomposed_overlay%22%3Afalse%2C%22show_story_viewer_list%22%3Atrue%2C%22story_viewer_fetch_count%22%3A50%2C%22story_viewer_cursor%22%3A%22%22%2C%22stories_video_dash_manifest%22%3Afalse%7D" target="_blank">https://www.instagram.com/stories...</a></p></div></div><p class="lead">Перейдите по ссылке и скопируйте содержимое страницы. После вставьте его в поле ниже и нажмите "Обработать".</p></div><br><br><p class="lead"><p class="form-group col-md-12"><textarea id="code_rewive" placeholder="Код сюда" rows="3" class="form-control"></textarea></p><p class="col-md-12"><button type="button" id="Continue3" class="btn btn-success">Обработать</button></p></div>`
                     );
-                    console.log(userid);
-                    console.log(hash);
-
                     $('#Continue3').on("click", function() {
                       var somecode = JSON.parse($('#code_rewive').val());
                       var cards = '';
@@ -244,7 +235,6 @@
                             `<div class="card bg-dark text-white"><img src="${background_img}" class="card-img"><div class="card-img-overlay"><h5 class="card-title text-left">${author_name}${type_content}<span class="float-right">${long_create} ч.</span></h5><p class="card-text text-right" style="margin-top: 160%;">${telegram_link}<a href="${download_link}" target="_blank" role="button" class="btn btn-success">Скачать</a></p></div></div></div>`;
                         }
                       });
-                      console.log(cards);
                       countSplit--;
                       console.log(`countSplit - ${countSplit}`);
                       if (countSplit % 2 == 0) {
