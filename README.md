@@ -8,7 +8,7 @@ Web application based on `React` and `Chakra UI`.
 - Download videos from simple profiles and private
 - Downloading photos from simple profiles and private
 
-You can use already compiled application from gith pages or compile it locally following instructions below.
+You can use already compiled application from [Github Pages](https://ningaro.github.io/instagram-private-download) or compile it locally following instructions below.
 
 ## Install
 
@@ -33,7 +33,10 @@ yarn build
 
 List of links to resources related to this project.
 
-- [Repository](https://github.com/Ningaro/instagram-private-download)
+- [Instagram Private Download APP](https://ningaro.github.io/instagram-private-download)
+- [Backend server](https://murmuring-fjord-53474.herokuapp.com/getUserStories)
+- [Frontend branch in repo](https://github.com/Ningaro/instagram-private-download/tree/front-master)
+- [Server branch in repo](https://github.com/Ningaro/instagram-private-download/tree/server-master)
 
 <!-- VARS -->
 
