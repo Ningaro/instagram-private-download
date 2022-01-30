@@ -38,5 +38,5 @@ app.post('/getUserStories', async (req, response) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server start at ${PORT}`)
+    console.log(`Server start at ${PORT}!`)
 })
