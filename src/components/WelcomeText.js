@@ -58,7 +58,7 @@ export default function WelcomeText({ changeStep }) {
 function SaveTip(props) {
     return (
         <Tooltip
-            label="Мы не храним информацию о наших пользователях, а все функции выполняются локально на вашем устройстве"
+            label="Мы не храним информацию о наших пользователях, а наш код открыт и вы можете ознакомиться c ним на Github"
             {...props}
         >
             {props.children}
