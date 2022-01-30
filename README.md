@@ -1,4 +1,3 @@
-@ -1,41 +0,0 @@
 # Instagram Private Download Server [![gitmoji][gitmoji]][gitmoji-url]
 
 >   *Save tool* 🗳
