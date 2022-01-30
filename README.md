@@ -1,39 +1,52 @@
-# Instagram Private Download [![gitmoji][gitmoji]][gitmoji-url]
+@ -1,41 +0,0 @@
+# Instagram Private Download Server [![gitmoji][gitmoji]][gitmoji-url]
 
 >   *Save tool* 🗳
 
-Web application based on `React` and `Chakra UI`.
+Backend server based on `Expresss`.
 
 ## Features:
-- Download videos from simple profiles and private
-- Downloading photos from simple profiles and private
+- Determine user ID by Login
+- Get data about the latest user stories
 
-You can use already compiled application from gith pages or compile it locally following instructions below.
+You can use already running server on [Heroku](https://murmuring-fjord-53474.herokuapp.com/getUserStories) or compile it locally following instructions below.
 
 ## Install
 
 Quick start guide:
 
 ```shell
-git clone https://github.com/Ningaro/instagram-private-download.git
+git clone -b server-master https://github.com/Ningaro/instagram-private-download.git
 cd /instagram-private-download
-yarn install
-yarn start
+npm install
 ```
 
-## Build
+## Usage
 
-In order to build the finished application, being in the project folder, run the following command in the console:
+This server start at `5000` port if `process.env.PORT` is empty
 
-```shell
-yarn build
-```
+### Methods
+
+| Method | Type | `Content-Type` Header | Avaliable Params(see description below) | Desc | 
+| - | - | - | - | - |
+| `/getUserStories` | POST | `application/json` | `{ "login": ..., "token": ... }` | Return object with stories info or error status |
+
+### Params
+
+| Name | Type | Desc |
+| - | - | - |
+| login | String | Instagram username without '@' symbol |
+| token | String | Session token (You can get it from Dev Tools on PC), the token is valid for ONE YEAR! |
+
 
 ## Links
 
 List of links to resources related to this project.
 
-- [Repository](https://github.com/Ningaro/instagram-private-download)
+- [Instagram Private Download APP](https://ningaro.github.io/instagram-private-download)
+- [Backend server](https://murmuring-fjord-53474.herokuapp.com/getUserStories)
+- [Frontend branch in repo](https://github.com/Ningaro/instagram-private-download/tree/front-master)
+- [Server branch in repo](https://github.com/Ningaro/instagram-private-download/tree/server-master)
 
 <!-- VARS -->
 
