@@ -1,4 +1,4 @@
-# Instagram Private Download [![gitmoji][gitmoji]][gitmoji-url]
+# Private Download [![gitmoji][gitmoji]][gitmoji-url]
 
 >   *Save tool* 🗳
 
