@@ -74,11 +74,11 @@ export default function Forms({ saveData, changeStep }) {
                     <Stack spacing={8} w="100%">
 
                         <FormControl>
-                            <FormLabel htmlFor='token'>Session Token</FormLabel>
+                            <FormLabel htmlFor='token'>Session Token и DS User ID</FormLabel>
                             <Input
                                 id='token'
                                 type='text'
-                                placeholder="sessionid=..."
+                                placeholder="ds_user_id=...; sessionid=..."
                                 value={form.token}
                                 onChange={handleChange}
                             />
