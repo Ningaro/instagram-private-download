@@ -1,31 +1,32 @@
 {
-  "name": "node-js-server-instagram-private-download",
-  "version": "1.0.0",
-  "description": "A simple Node.js server using Express 4",
-  "engines": {
-    "node": "16.x"
-  },
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "axios": "^0.25.0",
-    "cors": "^2.8.5",
-    "express": "^4.17.2"
-  },
-  "devDependencies": {
-    "got": "^11.3.0",
-    "tape": "^4.7.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Ningaro/instagram-private-download"
-  },
-  "keywords": [
-    "node",
-    "heroku",
-    "express"
-  ],
-  "license": "MIT"
+    "name": "node-js-server-instagram-private-download",
+    "version": "1.0.0",
+    "description": "A simple Node.js server using Express 4",
+    "engines": {
+        "node": "16.x"
+    },
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "axios": "0.25.0",
+        "cors": "2.8.5",
+        "express": "4.17.2"
+    },
+    "devDependencies": {
+        "got": "11.3.0",
+        "prettier": "2.8.8",
+        "tape": "4.7.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Ningaro/instagram-private-download"
+    },
+    "keywords": [
+        "node",
+        "heroku",
+        "express"
+    ],
+    "license": "MIT"
 }
