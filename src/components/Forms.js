@@ -36,7 +36,7 @@ export default function Forms({ saveData, changeStep }) {
         const login = form.login !== "" ? trimLogin(form.login) : trimLink(form.link)
         const token = form.token
 
-        axios.post(`https://murmuring-fjord-53474.herokuapp.com/getUserStories`, { token, login })
+        axios.post(`https://instagram-private-download.onrender.com/getUserStories`, { token, login })
             .then(res => saveData(res.data))
             .then(() => changeStep(2))
             .catch(e => {
